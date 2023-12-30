@@ -45,6 +45,13 @@ class AddUserViewController: UIViewController {
                     self.delegate?.didEndAddUser()
                 }
             }.store(in: &cancellables)
+        
+        self.viewModel.$isLoading
+            .receive(on: DispatchQueue.main)
+            .sink { isLoading in
+                isLoading ? IndicatorView.shared.startIndicator() : IndicatorView.shared.stopIndicator()
+            }
+            .store(in: &cancellables)
     }
 
     @IBAction func addUserButtonTapped(_ sender: Any) {

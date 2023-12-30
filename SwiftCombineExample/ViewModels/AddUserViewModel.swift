@@ -10,7 +10,8 @@ import Combine
 
 class AddUserViewModel {
     
-    @Published var isSuccess: Bool = false
+    @Published private(set) var isSuccess: Bool = false
+    @Published private(set) var isLoading: Bool = false
     
     weak var delegate: AddUserViewModelDelegate?
     
@@ -62,7 +63,7 @@ class AddUserViewModel {
     }
     
     func addUserCombine(userId: String, name: String, comment: String) {
-        IndicatorView.shared.startIndicator()
+        self.isLoading = true
         
         let url = URL(string: BASE_URL + API_URL + UserApi.store.rawValue)!
         
@@ -74,7 +75,7 @@ class AddUserViewModel {
         
         ApiManager.postRequestCombine(param: parameter, url: url)
             .sink { completion in
-                IndicatorView.shared.stopIndicator()
+                self.isLoading = false
                 
                 switch completion {
                 case let .failure(error):
