@@ -1,0 +1,18 @@
+/* 
+  Localizable.strings
+  SwiftAsyncExample
+
+  Created by Takeshi Kayahashi on 2022/05/26.
+  
+*/
+
+// MARK: Alert
+"errorAlertTitle" = "エラー";
+"confirmAlertTitle" = "確認";
+"closeAlertButtonTitle" = "閉じる";
+"networkCommunicationFailedMessage" = "通信に失敗しました。";
+
+// MARK: User
+"addUserViewTitle" = "ユーザー追加";
+"notCompletedInputFieldMessage" = "入力が完了していない箇所があります。";
+"addUserFailedMessage" = "ユーザーの追加に失敗しました。";
