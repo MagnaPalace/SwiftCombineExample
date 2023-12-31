@@ -15,13 +15,26 @@ class ViewController: UIViewController {
     private let viewModel =  UserListViewModel()
     
     private var cancellables = Set<AnyCancellable>() // 購読キャンセル
+    
+    private typealias DataSource = UITableViewDiffableDataSource<Int, User>
+    private lazy var dataSource = configureDataSource()
+    
+    private func configureDataSource() -> DataSource {
+        return UITableViewDiffableDataSource(tableView: tableView,
+                                             cellProvider: { table, index, user in
+            let cell = table.dequeueReusableCell(withIdentifier: "UserListTableViewCell",
+                                                 for: index) as? UserListTableViewCell
+            cell?.initialize(model: .init(userNo: user.userId, name: user.name, comment: user.comment))
+            return cell
+        })
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         self.title = "SwiftCombineExample"
-        self.tableView.delegate = self
-        self.tableView.dataSource = self
+//        self.tableView.delegate = self
+//        self.tableView.dataSource = self
         
         self.setNavigationBar()
         
@@ -39,8 +52,12 @@ class ViewController: UIViewController {
         // combine
         self.viewModel.$users
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
-                self?.tableView.reloadData()
+            .sink { [weak self] users in
+//                self?.tableView.reloadData()
+                var snapshot = NSDiffableDataSourceSnapshot<Int, User>()
+                snapshot.appendSections([0])
+                snapshot.appendItems(users)
+                self?.dataSource.apply(snapshot, animatingDifferences: true)
             }
             .store(in: &cancellables)
         
@@ -75,24 +92,24 @@ class ViewController: UIViewController {
 
 }
 
-extension ViewController: UITableViewDelegate {
-    
-}
-
-extension ViewController: UITableViewDataSource {
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.viewModel.users.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let user = self.viewModel.users[indexPath.row]
-        let cell = self.tableView.dequeueReusableCell(withIdentifier: "UserListTableViewCell") as? UserListTableViewCell
-        cell?.initialize(model: .init(userNo: user.userId, name: user.name, comment: user.comment))
-        return cell!
-    }
-    
-}
+//extension ViewController: UITableViewDelegate {
+//
+//}
+//
+//extension ViewController: UITableViewDataSource {
+//    
+//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        return self.viewModel.users.count
+//    }
+//
+//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        let user = self.viewModel.users[indexPath.row]
+//        let cell = self.tableView.dequeueReusableCell(withIdentifier: "UserListTableViewCell") as? UserListTableViewCell
+//        cell?.initialize(model: .init(userNo: user.userId, name: user.name, comment: user.comment))
+//        return cell!
+//    }
+//
+//}
 
 extension ViewController: UserListViewModelDelegate {
 

@@ -28,3 +28,20 @@ extension User {
         case comment = "comment"
     }
 }
+
+extension User: Hashable {
+    
+    // Hashableプロトコルに準拠するために必要なhash(into:)メソッド
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(userId)
+        hasher.combine(name)
+        hasher.combine(comment)
+    }
+    
+    // Hashableプロトコルに準拠するために必要な==演算子
+    static func == (lhs: User, rhs: User) -> Bool {
+        return lhs.userId == rhs.userId && lhs.name == rhs.name && lhs.comment == rhs.comment
+    }
+    
+}
+
