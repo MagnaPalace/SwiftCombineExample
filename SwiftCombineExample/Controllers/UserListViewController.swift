@@ -17,7 +17,7 @@ class ViewController: UIViewController {
     private var cancellables = Set<AnyCancellable>() // 購読キャンセル
     
     private typealias DataSource = UITableViewDiffableDataSource<Int, User>
-    private lazy var dataSource = configureDataSource()
+    private lazy var dataSource = configureDataSource() // Lazy Stored Property(遅延格納プロパティ)
     
     private func configureDataSource() -> DataSource {
         return UITableViewDiffableDataSource(tableView: tableView,
@@ -57,7 +57,7 @@ class ViewController: UIViewController {
                 var snapshot = NSDiffableDataSourceSnapshot<Int, User>()
                 snapshot.appendSections([0])
                 snapshot.appendItems(users)
-                self?.dataSource.apply(snapshot, animatingDifferences: true)
+                self?.dataSource.apply(snapshot, animatingDifferences: false)
             }
             .store(in: &cancellables)
         
